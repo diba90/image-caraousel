@@ -8,73 +8,188 @@
 
     <style>
 
+        h2 {
+            margin-top: 100px;
+            width: 100%;
+            isolation: auto;
+            text-align: center;
+        }
+
         .caraousal-section {
             float: left;
             width: 100%;
             display: flex;
             justify-content: center;
             text-align: center;
+            position: relative;
         }
 
         .slide, img {  
-            width: 150px;
+            width: 650px;
             height: auto;
             margin: 20px;
         }
-        
+
+        .prev {
+            width: auto;
+            margin-top: -22px;
+            position: absolute;
+            padding: 16px;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 52px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            left: 30%;
+            top: 39%;
+        }
+
+        .next {
+            width: auto;
+            margin-top: -22px;
+            position: absolute;
+            padding: 16px;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 52px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            right: 28%;
+            top: 39%;
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="caraousal-section">
 
-        <div class="slide">
-            <img src="one.jpg">
-        </div>
-        
-        <div class="slide">
-            <img src="two.jpg">
-        </div>
+    <div class="container">
+        <h2>Showing <span id="currentIndex"></span> of  <span id="maxIndex"></span></h2>
+        <div id="caraousal" class="caraousal-section">
 
-        <div class="slide">
-            <img src="three.jpg">
-        </div>
-        
-        <div class="slide">
-            <img src="four.jpg">
-        </div>
+            <div class="slide ">
+                <img id="slide" src="./images/1.jpg">
+            </div>
 
-        <div class="slide">
-            <img src="five.jpg">
-        </div>
+            <a class="prev" onclick="PrevSlide()">&#10094;</a>
+            <a class="next" onclick="NextSlide()">&#10095;</a>
+            
+            <!-- <div class="slide">
+                <img src="two.jpg">
+            </div>
 
-        <div class="slide">
-            <img src="six.jpg">
-        </div>
-        
-        <div class="slide">
-            <img src="seven.jpg">
-        </div>
+            <div class="slide">
+                <img src="three.jpg">
+            </div>
+            
+            <div class="slide">
+                <img src="four.jpg">
+            </div>
 
+            <div class="slide">
+                <img src="five.jpg">
+            </div>
+            
+            <div class="slide">
+                <img src="seven.jpg">
+            </div> -->
+
+        </div>
     </div>
 
     <script>
-     
-        let activeSlide = 0;
-        let nextSlide = document.querySelector(".btn-next");
 
-        next.addEventListener("click", function( {
-            activeSlide++;
-            slides.forEach((slide, index) => {
-                slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`;
-            });
-        }))
-        
-        setInterval(function () {
-            element.innerHTML += "Hello"
-        }, 1000);
-        
+        var intervalID = null;
+        var slide = document.getElementById('slide');
+        var directory = 'images/';
+        var index = 1;
+        var length = 6;
+
+        imageCaraosel = setInterval(slideAnimation, 1000);
+
+        function slideAnimation() {
+            slide.src = directory + index +'.jpg';
+            index = (index === length) ? 1 : ++index;
+            document.getElementById("currentIndex").innerHTML = index;
+            document.getElementById("maxIndex").innerHTML = length;
+        };
+
+        function NextSlide() {
+            clearInterval(imageCaraosel);
+            if(index >= 1 && index < 6) {
+                index++;
+            } else if (index === 6) {
+                index = 1;
+            }
+            imageCaraosel = setInterval(slideAnimation, 1000);
+            document.getElementById("currentIndex").innerHTML = index;
+        }
+
+        function PrevSlide() {
+          
+            clearInterval(imageCaraosel);
+            if(index > 1 && index <= 6) {
+                index--;
+            } else if (index === 1) {
+                index = 6;
+            }
+            imageCaraosel = setInterval(slideAnimation, 1000);
+            document.getElementById("currentIndex").innerHTML = index;
+        }
+
+        // const slideContainer = document.querySelector(".container");
+        // var slide = document.querySelector(".caraousal-section");
+        // const interval = 1000;
+
+        // var slides = document.querySelectorAll(".slide");
+        // let index = 1;
+
+        // const firstSlideCopy = slides[0].cloneNode(true);
+        // const lastSlideCopy = slides[slides.length - 1].cloneNode(true);
+
+        // firstSlideCopy.id = "first-copy";
+        // lastSlideCopy.id = "last-copy";
+
+        // slide.append(firstSlideCopy);
+        // slide.prepend(lastSlideCopy);
+
+        // const slideWidth = slides[index].clientWidth;
+
+
+        // slide.style.transform = `translateX(${-slideWidth * index}px)`;
+
+        // const startSlide = () => {
+        //     slideId = setInterval(() => {
+        //         index++
+        //         slide.style.transform = `translateX(${-slideWidth * index}px)`;
+        //         slide.style.transition = ".5s";
+        //         const flag = slides.length - 1;
+        //         if(index === flag) {
+        //             index = flag;
+        //         }
+        //     }, interval)
+        // }
+
+        // slide.addEventListener('transitionend', () => {
+        //     var slides = document.querySelectorAll(".slide");
+        //     if(slides[index].id == firstSlideCopy.id) {
+        //         console.log(slides);
+        //         slide.style.transition = 'none';
+        //         index = 1;
+        //         slide.style.transform = `translateX(${-slideWidth * index}px)`;
+        //     }
+        // })
+
+        // slideContainer.addEventListener('mouseenter', () => {
+        //     clearInterval(slideId);
+        // });
+
+        // slideContainer.addEventListener('mouseleave', startSlide);
+
+        // startSlide();      
     
     </script>
 </body>
