@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+
     <title>Image Caraousal</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,10 +25,10 @@
             position: relative;
         }
 
-        .slide, img {  
-            width: 650px;
+        img {  
+            width: 350px;
             height: auto;
-            margin: 20px;
+            display: none;
         }
 
         .prev {
@@ -35,14 +36,14 @@
             margin-top: -22px;
             position: absolute;
             padding: 16px;
-            color: #ffffff;
+            color: #817a7a;
             font-weight: bold;
             font-size: 52px;
             transition: 0.6s ease;
             border-radius: 0 3px 3px 0;
             user-select: none;
-            left: 30%;
-            top: 39%;
+            left: 28%;
+            top: 25%;
         }
 
         .next {
@@ -50,14 +51,14 @@
             margin-top: -22px;
             position: absolute;
             padding: 16px;
-            color: #ffffff;
+            color: #817a7a;
             font-weight: bold;
             font-size: 52px;
             transition: 0.6s ease;
             border-radius: 0 3px 3px 0;
             user-select: none;
             right: 28%;
-            top: 39%;
+            top: 25%;
         }
 
     </style>
@@ -68,128 +69,86 @@
 
     <div class="container">
         <h2>Showing <span id="currentIndex"></span> of  <span id="maxIndex"></span></h2>
-        <div id="caraousal" class="caraousal-section">
-
-            <div class="slide ">
-                <img id="slide" src="./images/1.jpg">
-            </div>
-
-            <a class="prev" onclick="PrevSlide()">&#10094;</a>
-            <a class="next" onclick="NextSlide()">&#10095;</a>
-            
-            <!-- <div class="slide">
-                <img src="two.jpg">
-            </div>
-
-            <div class="slide">
-                <img src="three.jpg">
-            </div>
-            
-            <div class="slide">
-                <img src="four.jpg">
-            </div>
-
-            <div class="slide">
-                <img src="five.jpg">
-            </div>
-            
-            <div class="slide">
-                <img src="seven.jpg">
-            </div> -->
-
-        </div>
+        <div id="caraousal" onmouseleave="resumeSlider()" onmouseover="stopSlider()" class="caraousal-section"></div>
+        <a class="prev" onclick="prevSlide()">&#10094;</a>
+        <a class="next" onclick="nextSlide()">&#10095;</a>
     </div>
 
     <script>
 
         var intervalID = null;
-        var slide = document.getElementById('slide');
-        var directory = 'images/';
         var index = 1;
-        var length = 6;
+        var customId = 1;
+        var totalImages = null;
+        var images = null;
+
+        let clientId = "t894MI5fDrVa66lAASQx1b-Ra8pDE9RV5nhNJhmcKDw";
+        let url = "https://api.unsplash.com/search/photos?client_id="+ clientId +"&query=landscape";
+
+        fetch(url)
+        .then(function (data) {
+            return data.json();
+        })
+        .then(function (data) {
+            totalImages = data.results.length;
+            data.results.forEach(photo => {
+                let image = document.createElement("img")
+                image.src = photo.urls.regular;
+                image.id = customId;
+                customId++;
+                document.getElementById("caraousal").append(image); 
+            });
+        })
 
         imageCaraosel = setInterval(slideAnimation, 1000);
 
         function slideAnimation() {
-            slide.src = directory + index +'.jpg';
-            index = (index === length) ? 1 : ++index;
+            images = document.getElementsByTagName('img');
+            for (i = 0; i < images.length;i++ ) {
+                images[i].style.display = "none";
+            }
+            document.getElementById(index).style.display = "block";
+            index = (index === totalImages) ? 1 : ++index;
             document.getElementById("currentIndex").innerHTML = index;
-            document.getElementById("maxIndex").innerHTML = length;
+            document.getElementById("maxIndex").innerHTML = totalImages;
         };
 
-        function NextSlide() {
+        function nextSlide() {
             clearInterval(imageCaraosel);
-            if(index >= 1 && index < 6) {
+            if(index >= 1 && index < totalImages) {
                 index++;
-            } else if (index === 6) {
+            } else if (index === totalImages) {
                 index = 1;
             }
-            imageCaraosel = setInterval(slideAnimation, 1000);
+            for (i = 0; i < images.length;i++ ) {
+                images[i].style.display = "none";
+            }
+            document.getElementById(index).style.display = "block";
             document.getElementById("currentIndex").innerHTML = index;
         }
 
-        function PrevSlide() {
-          
+        function prevSlide() {
             clearInterval(imageCaraosel);
-            if(index > 1 && index <= 6) {
+            if(index > 1 && index <= totalImages) {
                 index--;
             } else if (index === 1) {
-                index = 6;
+                index = totalImages;
             }
-            imageCaraosel = setInterval(slideAnimation, 1000);
+            for (i = 0; i < images.length;i++ ) {
+                images[i].style.display = "none";
+            }
+            document.getElementById(index).style.display = "block";
             document.getElementById("currentIndex").innerHTML = index;
         }
 
-        // const slideContainer = document.querySelector(".container");
-        // var slide = document.querySelector(".caraousal-section");
-        // const interval = 1000;
+        function resumeSlider() {
+            clearInterval(imageCaraosel);
+            imageCaraosel = setInterval(slideAnimation, 1000);
+        } 
 
-        // var slides = document.querySelectorAll(".slide");
-        // let index = 1;
-
-        // const firstSlideCopy = slides[0].cloneNode(true);
-        // const lastSlideCopy = slides[slides.length - 1].cloneNode(true);
-
-        // firstSlideCopy.id = "first-copy";
-        // lastSlideCopy.id = "last-copy";
-
-        // slide.append(firstSlideCopy);
-        // slide.prepend(lastSlideCopy);
-
-        // const slideWidth = slides[index].clientWidth;
-
-
-        // slide.style.transform = `translateX(${-slideWidth * index}px)`;
-
-        // const startSlide = () => {
-        //     slideId = setInterval(() => {
-        //         index++
-        //         slide.style.transform = `translateX(${-slideWidth * index}px)`;
-        //         slide.style.transition = ".5s";
-        //         const flag = slides.length - 1;
-        //         if(index === flag) {
-        //             index = flag;
-        //         }
-        //     }, interval)
-        // }
-
-        // slide.addEventListener('transitionend', () => {
-        //     var slides = document.querySelectorAll(".slide");
-        //     if(slides[index].id == firstSlideCopy.id) {
-        //         console.log(slides);
-        //         slide.style.transition = 'none';
-        //         index = 1;
-        //         slide.style.transform = `translateX(${-slideWidth * index}px)`;
-        //     }
-        // })
-
-        // slideContainer.addEventListener('mouseenter', () => {
-        //     clearInterval(slideId);
-        // });
-
-        // slideContainer.addEventListener('mouseleave', startSlide);
-
-        // startSlide();      
+        function stopSlider() {
+            clearInterval(imageCaraosel);
+        }
     
     </script>
 </body>
